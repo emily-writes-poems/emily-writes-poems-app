@@ -15,7 +15,7 @@ export default class FeaturedPoem extends Component{
     getFeature() {
         axios.get('/poems/feature/')
         .then(response => {
-            if(response.data != null) {
+            if (response.data != null) {
                 this.setState({
                     poem_title : response.data.poem_title,
                     poem_id : response.data.poem_id,
@@ -30,10 +30,10 @@ export default class FeaturedPoem extends Component{
     }
 
     render(){
-        if(!this.state.poem_id) { return null; }
+        if (!this.state.poem_id) { return null; }
 
-        if(this.state.poem_id) {
-            return(
+        if (this.state.poem_id) {
+            return (
                 <div className="feature-alert align-center">
                     <b>currently featured poem.</b><br />
                     <Link className="featured-poem link-style" to={'/poem/' + this.state.poem_id}>{this.state.poem_title}</Link><br />

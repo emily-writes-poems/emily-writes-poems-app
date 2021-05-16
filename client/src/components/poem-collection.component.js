@@ -28,7 +28,7 @@ export default class PoemCollection extends Component {
     getCollectionData() {
         axios.get('/poems/collection/' + this.props.match.params.collection_id)
         .then(response => {
-            if(response.data!=null) {
+            if (response.data!=null) {
                 this.setState({
                     name : response.data.collection_name,
                     summary : response.data.collection_summary,
@@ -38,7 +38,7 @@ export default class PoemCollection extends Component {
             }
         })
         .catch((error) => {
-            console.log(error);
+            this.setState( { name: 'null collection' })
         })
     }
 
@@ -49,45 +49,40 @@ export default class PoemCollection extends Component {
 
 
     collectionSummary(){
-        if(this.state.summary) {
-            return (
-                <div>
-                    <h5 className="font-2 color-accent-1">about this poem collection.</h5>
-                    <h6><Markdown source={this.state.summary} escapeHtml={false}/></h6>
-                </div>
-            );
-        } else {
-            return (
-                <div>
-                    <h5 className="font-2 color-accent-1">about this poem collection.</h5>
-                    <h6>summary to come!</h6>
-                </div>
-            );
-        }
+        return (
+            <div>
+                <h5 className="font-2 color-accent-1">about this poem collection.</h5>
+                <h6><Markdown source={this.state.summary ? this.state.summary : 'Summary to come!'} escapeHtml={false}/></h6>
+            </div>
+        );
     }
 
     collectionPoems(){
-         var links = this.state.poem_ids.map((id, index) =>
-             <li key={index}>
-                 <Link className='link-style no-td' to={'/poem/' + this.state.poem_ids[index]}>
-                     <Button className="button">{this.state.poem_titles[index]}</Button>
-                 </Link>
-             </li>
-         );
+        var links = this.state.poem_ids.map((id, index) =>
+            <li key={index}>
+                <Link className='link-style no-td' to={'/poem/' + this.state.poem_ids[index]}>
+                    <Button className="button">{this.state.poem_titles[index]}</Button>
+                </Link>
+            </li>
+        );
 
-         return (
-             <div className='styledButtonLinks'>
-                 <h5 className="font-2 color-accent-1">poems in collection.</h5>
-                 <ul>
-                     {links}
-                 </ul>
-             </div>
-         );
+        return (
+            <div className='styledButtonLinks'>
+                <h5 className="font-2 color-accent-1">poems in collection. ({this.state.poem_ids.length})</h5>
+                <ul>
+                    {links}
+                </ul>
+            </div>
+        );
     }
 
 
     render() {
-        if(this.state.name){
+        // While loading
+        if (!this.state.name) { return null; }
+
+        // Collection found and data loaded
+        if (this.state.name && this.state.name !== 'null collection') {
             return (
                 <div>
                     <Helmet>
@@ -108,9 +103,7 @@ export default class PoemCollection extends Component {
                 </div>
             );
         } else {
-            return(
-                <div><ErrorPage text="Poem collection"/></div>
-            );
+            return (<div><ErrorPage text="Poem collection"/></div>);
         }
     }
 }

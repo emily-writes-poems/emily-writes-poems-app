@@ -38,7 +38,7 @@ export default class Poem extends Component {
         // get poem data from Mongo
         axios.get('/poems/poem/' + this.props.match.params.poem_id)
         .then(response => {
-            if(response.data != null){
+            if (response.data != null) {
                 this.setState({
                     id : this.props.match.params.poem_id,
                     date : response.data.poem_date,
@@ -61,8 +61,8 @@ export default class Poem extends Component {
 
                 axios.get('/poems/collection_by_poem/' + this.state.id)
                 .then(response => {
-                    if(response.data != null) {
-                        for(let col of response.data){
+                    if (response.data != null) {
+                        for (let col of response.data) {
                             this.setState({
                                 poem_collections_ids: [...this.state.poem_collections_ids, col.collection_id],
                                 poem_collections_names: [...this.state.poem_collections_names, col.collection_name]
@@ -75,9 +75,6 @@ export default class Poem extends Component {
             }
         })
         .catch((error) => {
-            if (error.response && error.response.data && error.response.data.message === 'poem not found'){
-                console.log('Server unable to find requested poem.')
-            }
             this.setState({ id: 'null poem'});
         });
 
@@ -94,7 +91,7 @@ export default class Poem extends Component {
     componentDidUpdate(prevProps) {
         var oldID = prevProps.match.params.poem_id;
         var newID = this.props.match.params.poem_id;
-        if(newID !== oldID) {
+        if (newID !== oldID) {
             this.getPoemData();
             this.expand_hide("behindTitleButton", "behindTitleText", true);
             this.expand_hide("behindPoemButton", "behindPoemText", true)
@@ -107,14 +104,14 @@ export default class Poem extends Component {
         var i;
         var ret = '';
 
-        for(i=0; i < this.state.text.length; i++){
-            if(this.state.text[i] === ''){
+        for (i=0; i < this.state.text.length; i++) {
+            if (this.state.text[i] === '') {
                 ret = ret + '<br />'  // have an actual line break
             } else {
                 ret = ret + this.state.text[i].replace(/\t/g, '\u0009') + '\n';  // replace tab characters
             }
         }
-        return(ret);
+        return (ret);
     }
 
 
@@ -123,12 +120,12 @@ export default class Poem extends Component {
         for (var word in this.state.top_words) {
             ret = ret + word + ' : '+ this.state.top_words[word] + '<br />';
         }
-        return(ret);
+        return (ret);
     }
 
 
     poemCollections() {
-        if(this.state.poem_collections_ids && this.state.poem_collections_ids.length) {
+        if (this.state.poem_collections_ids && this.state.poem_collections_ids.length) {
             var collections = this.state.poem_collections_names.map((coll, index) =>
                 <li key={index}>
                     <Link className='link-style no-td' to={'/collection/' + this.state.poem_collections_ids[index]}>
@@ -170,13 +167,13 @@ export default class Poem extends Component {
 
 
     expand_hide(optionText, sectionClass, reset = false) {
-        // we want to hide the section and show the expand option
-        if(document.getElementsByClassName(sectionClass)[0].classList.contains("shown")){
+        // hide the section and show the expand option
+        if (document.getElementsByClassName(sectionClass)[0].classList.contains("shown")) {
             document.getElementsByClassName(optionText)[0].textContent = "[expand +]";
             document.getElementsByClassName(sectionClass)[0].classList.remove("shown");
             document.getElementsByClassName(sectionClass)[0].classList.add("hidden");
-        // we want to display the section and show the hide option
-        }else if(!reset){
+        // display the section and show the hide option
+        } else if(!reset) {
             document.getElementsByClassName(optionText)[0].textContent = "[hide -]";
             document.getElementsByClassName(sectionClass)[0].classList.remove("hidden");
             document.getElementsByClassName(sectionClass)[0].classList.add("shown");
@@ -216,7 +213,7 @@ export default class Poem extends Component {
 
 
     commentForm(){
-        return(
+        return (
             <div>
                 <br />
                 <h5 className="comment"><a className="link-style" href={`mailto:emilywritescode+poems@gmail.com?subject=Comment%20for%20"${this.state.title}"`}>[Leave your comments/feedback on this poem (via email).]</a></h5>
@@ -246,8 +243,8 @@ export default class Poem extends Component {
         // While loading
         if (!this.state.id) { return null; }
 
-        // Poem found
-        if (this.state.id && this.state.id!=='null poem') {
+        // Poem found and data loaded
+        if (this.state.id && this.state.id !== 'null poem') {
             return (
                 <div>
                     <Header />

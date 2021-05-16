@@ -33,7 +33,7 @@ export default class PoemsList extends Component {
 
     poemsList() {
         // map each poem to its own Link
-        return(this.state.poems.map((poem) =>
+        return (this.state.poems.map((poem) =>
             <li key={poem.poem_id}>
                 <Link className='link-style' to={'/poem/' + poem.poem_id}>{poem.poem_title}</Link>
             </li>
@@ -43,10 +43,10 @@ export default class PoemsList extends Component {
 
     render() {
         // While loading
-        if(!this.state.poems.length) {  return null; }
+        if (!this.state.poems.length) { return null; }
 
         // Poems list found
-        if(this.state.poems){
+        if (this.state.poems) {
             return (
                 <div>
                     <Helmet>

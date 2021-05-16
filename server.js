@@ -42,8 +42,8 @@ poemRoutes.route('/').get(function(req, res) {
 poemRoutes.route('/poem/:poem_id').get(function(req, res) {
     console.log('>> Querying for poem: ' + req.params.poem_id);
     Poem.findOne({ poem_id: req.params.poem_id}, '-_id', function(err, poem) {
-        if(err) { return res.send(err); }
-        else if (poem === null) { return res.status(404).send({ message : 'poem not found' }); }
+        if(err) { console.log(err); return res.send(err); }
+        else if (poem === null) { console.log('>> Error: poem not found'); return res.status(404); }
         else { res.json(poem); }
     });
 });
@@ -52,9 +52,10 @@ poemRoutes.route('/poem/:poem_id').get(function(req, res) {
 // Search for collections a given poem is in
 poemRoutes.route('/collection_by_poem/:poem_id').get(function(req, res) {
     console.log('>> Querying for poem collection(s) for poem: ' + req.params.poem_id);
-    PoemCollection.find({ poem_ids : { $in: [req.params.poem_id] } }, '-_id', function(err, coll) {
+    PoemCollection.find({ poem_ids : { $in: [req.params.poem_id] } }, '-_id', function(err, colls) {
         if(err) { return res.send(err); }
-        else { res.json(coll); }
+        else if (colls === null) { console.log('>> No collections found'); return res.status(404); }
+        else { res.json(colls); }
     });
 });
 
@@ -64,19 +65,22 @@ poemRoutes.route('/collection/:collection_id').get(function(req, res) {
     console.log('>> Querying for poem collection by ID: ' + req.params.collection_id);
     PoemCollection.findOne({ collection_id : req.params.collection_id }, '-_id', function(err, coll) {
         if(err) { return res.send(err); }
-        else if (coll === null) { return res.status(404).send({ message: 'collection not found' }); }
+        else if (coll === null) { console.log('>> Error: poem collection not found'); return res.status(404); }
         else { res.json(coll); }
     });
 });
+
 
 // Get the current feature
 poemRoutes.route('/feature/').get(function(req, res) {
     console.log('>> Querying for current feature');
     Feature.findOne( { currently_featured : true }, '-_id -currently_featured', function(err, feat) {
        if(err) { console.log(err); }
+       else if (feat === null) { console.log('>> No current feature') }
        else { res.json(feat); }
     });
 });
+
 
 app.use(express.static(path.join(__dirname, "client", "build")))
 app.use('/poems', poemRoutes)
@@ -88,6 +92,7 @@ app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "client", "build", "index.html"));
     }
 });
+
 
 app.listen(PORT, function() {
     console.log('>> Server is running on port ' + PORT);
